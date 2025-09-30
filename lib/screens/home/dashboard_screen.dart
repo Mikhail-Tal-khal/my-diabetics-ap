@@ -123,7 +123,7 @@ class TestResultsSection extends StatelessWidget {
                   return Padding(
                     padding: const EdgeInsets.only(right: 12),
                     child: HistoryCard(
-                      result: result,
+                      result: result as dynamic,
                       onTap: () => _showResultDetails(context, result),
                     ),
                   );

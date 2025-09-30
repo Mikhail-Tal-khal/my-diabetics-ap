@@ -66,9 +66,10 @@ class MyApp extends StatelessWidget {
             return MediaQuery(
               data: MediaQuery.of(context).copyWith(
                 // Replace TextScaler with textScaleFactor for compatibility
-                textScaleFactor: MediaQuery.of(
+                textScaler: TextScaler.linear(MediaQuery.of(
                   context,
-                ).textScaleFactor.clamp(0.8, 1.4),
+                // ignore: deprecated_member_use
+                ).textScaleFactor.clamp(0.8, 1.4)),
               ),
               child: child!,
             );

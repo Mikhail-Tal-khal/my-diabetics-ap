@@ -54,7 +54,9 @@ class TestResultsProvider with ChangeNotifier {
   String? get error => _error;
 
   void initialize(UserAuthProvider auth, DatabaseService db) {
-    update(auth.currentUser!.id, db);
+    // ✅ Fixed: Check if currentUser exists before accessing id
+    final userId = auth.currentUser?.id;
+    update(userId, db);
   }
 
   void update(String? userId, DatabaseService? dbService) {

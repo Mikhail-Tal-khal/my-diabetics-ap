@@ -1,4 +1,3 @@
-// lib/widgets/doctor_card.dart
 import 'package:flutter/material.dart';
 import '../models/doctor.dart';
 
@@ -29,13 +28,7 @@ class DoctorCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                  child: doctor.isAvailable
-                      ? const Icon(Icons.person, size: 40, color: Colors.blue)
-                      : Icon(Icons.person, size: 40, color: Colors.grey.shade400),
-                ),
+                _buildAvatar(context),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
@@ -112,6 +105,23 @@ class DoctorCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildAvatar(BuildContext context) {
+    // Use CircleAvatar with icon instead of image
+    return CircleAvatar(
+      radius: 30,
+      backgroundColor: doctor.isAvailable
+          ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+          : Colors.grey.shade200,
+      child: Icon(
+        Icons.person,
+        size: 40,
+        color: doctor.isAvailable
+            ? Theme.of(context).colorScheme.primary
+            : Colors.grey.shade400,
       ),
     );
   }
