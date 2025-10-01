@@ -18,7 +18,7 @@ class ProfileAppBar extends StatelessWidget {
               end: Alignment.bottomCenter,
               colors: [
                 Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                Theme.of(context).colorScheme.primary.withValues(alpha : 0.8),
               ],
             ),
           ),

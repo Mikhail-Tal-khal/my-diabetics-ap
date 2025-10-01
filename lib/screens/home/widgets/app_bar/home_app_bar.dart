@@ -1,116 +1,162 @@
-// ignore_for_file: deprecated_member_use
-
+// lib/screens/home/home_screen.dart
 import 'package:flutter/material.dart';
-import 'package:my_diabeticapp/providers/user_auth_provider.dart';
+import 'package:my_diabeticapp/routes/app_routes.dart';
+import 'package:my_diabeticapp/screens/home/dashboard_screen.dart';
+import 'package:my_diabeticapp/screens/home/history_screen.dart';
+import 'package:my_diabeticapp/screens/profile/profile_screen.dart';
 import 'package:provider/provider.dart';
 
-class HomeAppBar extends StatelessWidget {
-  final VoidCallback onSettingsTap;
-  final int currentStreak;
 
-  const HomeAppBar({
-    super.key,
-    required this.onSettingsTap,
-    required this.currentStreak,
-  });
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+  
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _currentIndex = 0;
+  final PageController _pageController = PageController();
+  
+  late final List<Widget> _screens;
 
   @override
-  Widget build(BuildContext context) {
-    final user = Provider.of<UserAuthProvider>(context).currentUser;
-    final theme = Theme.of(context).colorScheme;
+  void initState() {
+    super.initState();
+    _screens = [
+      DashboardScreen(onSettingsTap: () {}),
+      const HistoryScreen(),
+      const ProfileScreen(),
+    ];
+  }
 
-    return SliverAppBar(
-      expandedHeight: 220,
-      floating: false,
-      pinned: true,
-      backgroundColor: theme.primary,
-      elevation: 0,
-      automaticallyImplyLeading: false,
-      flexibleSpace: FlexibleSpaceBar(
-        collapseMode: CollapseMode.pin,
-        titlePadding: const EdgeInsets.only(left: 20, bottom: 16),
-        background: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                theme.primary,
-                theme.primary.withOpacity(0.8),
-              ],
-            ),
-          ),
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Spacer(),
-                  Text(
-                    'Hello, ${user?.name ?? 'User'}',
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Have a healthy day!',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white.withOpacity(0.9),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  _buildStreakIndicator(),
-                  const Spacer(),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.notifications_outlined, size: 28),
-          color: Colors.white,
-          onPressed: () {},
-        ),
-        IconButton(
-          icon: const Icon(Icons.settings_outlined, size: 28),
-          color: Colors.white,
-          onPressed: onSettingsTap,
-        ),
-        const SizedBox(width: 10),
-      ],
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _onTabTapped(int index) {
+    // Handle center FAB tap (index 2 is placeholder)
+    if (index == 2) {
+      // Navigate to detection screen
+      Navigator.pushNamed(context, AppRoutes.detection);
+      return;
+    }
+    
+    // Adjust index for actual pages (skip the center placeholder)
+    final pageIndex = index > 2 ? index - 1 : index;
+    
+    _pageController.animateToPage(
+      pageIndex,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
     );
   }
 
-  Widget _buildStreakIndicator() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(20),
+  @override
+  Widget build(BuildContext context) {
+    return Provider<PageController>.value(
+      value: _pageController,
+      child: Scaffold(
+        body: PageView(
+          controller: _pageController,
+          onPageChanged: (index) {
+            setState(() => _currentIndex = index > 1 ? index + 1 : index);
+          },
+          physics: const NeverScrollableScrollPhysics(),
+          children: _screens,
+        ),
+        bottomNavigationBar: _buildBottomNavigationBar(),
+        floatingActionButton: _buildFloatingActionButton(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.local_fire_department_rounded,
-                    color: Colors.white, size: 20),
-          const SizedBox(width: 8),
-          Text(
-            '$currentStreak-day streak',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
+    );
+  }
+
+  Widget _buildBottomNavigationBar() {
+    return BottomAppBar(
+      shape: const CircularNotchedRectangle(),
+      notchMargin: 8.0,
+      elevation: 8,
+      child: SizedBox(
+        height: 60,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _buildNavItem(
+              icon: Icons.home_rounded,
+              label: 'Home',
+              index: 0,
             ),
-          ),
-        ],
+            _buildNavItem(
+              icon: Icons.history_rounded,
+              label: 'History',
+              index: 1,
+            ),
+            const SizedBox(width: 40), // Space for FAB
+            _buildNavItem(
+              icon: Icons.medical_services_rounded,
+              label: 'Doctor',
+              index: 3,
+            ),
+            _buildNavItem(
+              icon: Icons.person_rounded,
+              label: 'Profile',
+              index: 4,
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildNavItem({
+    required IconData icon,
+    required String label,
+    required int index,
+  }) {
+    final isSelected = _currentIndex == index;
+    final theme = Theme.of(context);
+    
+    return InkWell(
+      onTap: () => _onTabTapped(index),
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              color: isSelected
+                  ? theme.colorScheme.primary
+                  : Colors.grey.shade400,
+              size: 24,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                color: isSelected
+                    ? theme.colorScheme.primary
+                    : Colors.grey.shade400,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFloatingActionButton() {
+    return FloatingActionButton(
+      heroTag: 'home_fab', // Unique hero tag to prevent conflicts
+      onPressed: () => Navigator.pushNamed(context, AppRoutes.detection),
+      elevation: 4,
+      child: const Icon(Icons.camera_alt_rounded, size: 28),
     );
   }
 }

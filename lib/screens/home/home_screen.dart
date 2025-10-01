@@ -1,13 +1,13 @@
-
+// lib/screens/home/home_screen.dart
 import 'package:flutter/material.dart';
-import 'package:my_diabeticapp/routes/app_routes.dart';
-import 'package:my_diabeticapp/screens/home/widgets/navigation/custom_bottom_nav.dart';
+import 'package:my_diabeticapp/screens/doctor_consultation/doctor_consultation_screen.dart';
 import 'package:my_diabeticapp/screens/profile/profile_screen.dart';
 import 'dashboard_screen.dart';
 import 'history_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+  
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -15,11 +15,19 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   final PageController _pageController = PageController();
-  final List<Widget> _screens = [
-    DashboardScreen(onSettingsTap: () {}),
-    const HistoryScreen(),
-    const ProfileScreen(),
-  ];
+  
+  late final List<Widget> _screens;
+
+  @override
+  void initState() {
+    super.initState();
+    _screens = [
+      DashboardScreen(onSettingsTap: () {}),
+      const HistoryScreen(),
+      const DoctorConsultationScreen(),
+      const ProfileScreen(),
+    ];
+  }
 
   @override
   void dispose() {
@@ -33,7 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
-    setState(() => _currentIndex = index);
   }
 
   @override
@@ -41,22 +48,41 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: PageView(
         controller: _pageController,
-        onPageChanged: _onTabTapped,
+        onPageChanged: (index) {
+          setState(() => _currentIndex = index);
+        },
         physics: const NeverScrollableScrollPhysics(),
         children: _screens,
       ),
-      bottomNavigationBar: CustomBottomNavigation(
-        currentIndex: _currentIndex,
-        onTap: _onTabTapped,
-        primaryColor: Theme.of(context).colorScheme.primary,
-        unselectedColor: Colors.grey.shade400,
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.pushNamed(context, AppRoutes.detection),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        child: const Icon(Icons.camera_alt_rounded, color: Colors.white),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: _buildBottomNavigationBar(),
+    );
+  }
+
+  Widget _buildBottomNavigationBar() {
+    return BottomNavigationBar(
+      currentIndex: _currentIndex,
+      onTap: _onTabTapped,
+      type: BottomNavigationBarType.fixed,
+      selectedItemColor: Theme.of(context).colorScheme.primary,
+      unselectedItemColor: Colors.grey.shade400,
+      items: const [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home_rounded),
+          label: 'Home',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.history_rounded),
+          label: 'History',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.medical_services_rounded),
+          label: 'Doctor',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person_rounded),
+          label: 'Profile',
+        ),
+      ],
     );
   }
 }

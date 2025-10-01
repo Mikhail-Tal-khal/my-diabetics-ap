@@ -6,11 +6,7 @@ class HistoryCard extends StatelessWidget {
   final TestResult result;
   final VoidCallback? onTap;
 
-  const HistoryCard({
-    super.key,
-    required this.result,
-    this.onTap,
-  });
+  const HistoryCard({super.key, required this.result, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +40,8 @@ class HistoryCard extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: result.isNormal == true
-            ? Colors.green.withOpacity(0.1) 
-            : Colors.orange.withOpacity(0.1),
+            ? Colors.green.withValues(alpha: 0.1)
+            : Colors.orange.withValues(alpha: 0.1),
         shape: BoxShape.circle,
       ),
       child: Icon(
@@ -62,17 +58,14 @@ class HistoryCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            timestamp != null ? DateFormat('EEEE, MMM dd').format(timestamp) : '-',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
+            timestamp != null
+                ? DateFormat('EEEE, MMM dd').format(timestamp)
+                : '-',
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           Text(
             timestamp != null ? DateFormat('h:mm a').format(timestamp) : '',
-            style: TextStyle(
-              color: Colors.grey.shade600,
-              fontSize: 12,
-            ),
+            style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
           ),
         ],
       ),
@@ -85,10 +78,7 @@ class HistoryCard extends StatelessWidget {
       children: [
         Text(
           '${result.sugarLevel.toStringAsFixed(1)} mg/dL',
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         Text(
           result.isNormal == true ? 'Normal' : 'High',

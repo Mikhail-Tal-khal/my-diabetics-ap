@@ -1,3 +1,4 @@
+// lib/screens/home/dashboard_screen.dart
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
@@ -5,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:my_diabeticapp/providers/streak_provider.dart';
 import 'package:my_diabeticapp/screens/detection/diabetes_detection_screen.dart';
 import 'package:my_diabeticapp/screens/home/widgets/action_card.dart';
-import 'package:my_diabeticapp/screens/home/widgets/app_bar/home_app_bar.dart';
+import 'package:my_diabeticapp/providers/user_auth_provider.dart';
 import 'package:my_diabeticapp/screens/home/widgets/article_card.dart';
 import 'package:my_diabeticapp/screens/home/widgets/health_metrics_card.dart';
 import 'package:my_diabeticapp/screens/home/widgets/history_card.dart';
@@ -91,15 +92,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               controller: _scrollController,
               physics: const BouncingScrollPhysics(),
               slivers: [
-                HomeAppBar(
-                  onSettingsTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SettingsScreen(),
-                    ),
-                  ),
-                  currentStreak: streakProvider.currentStreak,
-                ),
+                _buildAppBar(context, streakProvider),
                 SliverToBoxAdapter(
                   child: FadeTransition(
                     opacity: _fadeAnimation,
@@ -134,20 +127,166 @@ class _DashboardScreenState extends State<DashboardScreen>
           floatingActionButton: AnimatedScale(
             scale: _showFAB ? 1.0 : 0.0,
             duration: const Duration(milliseconds: 200),
-            child: FloatingActionButton.extended(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const DiabetesDetectionScreen(),
+            child: Container(
+              height: 70,
+              width: 70,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Theme.of(context).colorScheme.primary,
+                    Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
+                  ],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.4),
+                    blurRadius: 12,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const DiabetesDetectionScreen(),
+                    ),
+                  ),
+                  customBorder: const CircleBorder(),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.add_rounded,
+                        color: Colors.white,
+                        size: 32,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Test',
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.95),
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              icon: const Icon(Icons.camera_alt_rounded),
-              label: const Text('New Scan'),
-              backgroundColor: Theme.of(context).colorScheme.primary,
             ),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildAppBar(BuildContext context, StreakProvider streakProvider) {
+    final user = Provider.of<UserAuthProvider>(context).currentUser;
+    final theme = Theme.of(context).colorScheme;
+
+    return SliverAppBar(
+      expandedHeight: 220,
+      floating: false,
+      pinned: true,
+      backgroundColor: theme.primary,
+      elevation: 0,
+      automaticallyImplyLeading: false,
+      flexibleSpace: FlexibleSpaceBar(
+        collapseMode: CollapseMode.pin,
+        titlePadding: const EdgeInsets.only(left: 20, bottom: 16),
+        background: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                theme.primary,
+                theme.primary.withValues(alpha: 0.8),
+              ],
+            ),
+          ),
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Spacer(),
+                  Text(
+                    'Hello, ${user?.name ?? 'User'}',
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Have a healthy day!',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white.withValues(alpha: 0.9),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.local_fire_department_rounded,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          '${streakProvider.currentStreak}-day streak',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Spacer(),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.notifications_outlined, size: 28),
+          color: Colors.white,
+          onPressed: () {},
+        ),
+        IconButton(
+          icon: const Icon(Icons.settings_outlined, size: 28),
+          color: Colors.white,
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const SettingsScreen(),
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
+      ],
     );
   }
 
@@ -500,11 +639,15 @@ class TestResultsSection extends StatelessWidget {
   }
 
   void _navigateToHistory(BuildContext context) {
-    final pageController = Provider.of<PageController>(context, listen: false);
-    pageController.animateToPage(
-      1,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
+    // Show a message since we're using bottom navigation
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Use the History tab in bottom navigation'),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
     );
   }
 
@@ -681,18 +824,28 @@ class ActionGrid extends StatelessWidget {
   }
 
   void _navigateToHistory(BuildContext context) {
-    Provider.of<PageController>(context, listen: false).animateToPage(
-      1,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
+    // Show a message since we're using bottom navigation
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Use the History tab in bottom navigation'),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
     );
   }
 
   void _navigateToDoctors(BuildContext context) {
-    Provider.of<PageController>(context, listen: false).animateToPage(
-      2,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
+    // Show a message since we're using bottom navigation
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Use the Doctor tab in bottom navigation'),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
     );
   }
 

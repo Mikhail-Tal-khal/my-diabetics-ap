@@ -51,9 +51,7 @@ class DoctorCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         doctor.specialty,
-                        style: TextStyle(
-                          color: Colors.grey.shade700,
-                        ),
+                        style: TextStyle(color: Colors.grey.shade700),
                       ),
                       const SizedBox(height: 4),
                       Row(
@@ -66,9 +64,7 @@ class DoctorCard extends StatelessWidget {
                           const SizedBox(width: 4),
                           Text(
                             doctor.rating.toString(),
-                            style: TextStyle(
-                              color: Colors.grey.shade700,
-                            ),
+                            style: TextStyle(color: Colors.grey.shade700),
                           ),
                         ],
                       ),
@@ -114,7 +110,7 @@ class DoctorCard extends StatelessWidget {
     return CircleAvatar(
       radius: 30,
       backgroundColor: doctor.isAvailable
-          ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+          ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
           : Colors.grey.shade200,
       child: Icon(
         Icons.person,
@@ -131,8 +127,8 @@ class DoctorCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: doctor.isAvailable
-            ? Colors.green.withOpacity(0.1)
-            : Colors.red.withOpacity(0.1),
+            ? Colors.green.withValues(alpha: 0.1)
+            : Colors.red.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Text(
