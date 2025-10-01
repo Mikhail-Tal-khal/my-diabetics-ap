@@ -6,6 +6,9 @@ class ConnectivityProvider with ChangeNotifier {
   final Connectivity _connectivity = Connectivity();
 
   bool get isOnline => _isOnline;
+  bool _isConnected = true;
+
+  bool get isConnected => _isConnected;
 
   ConnectivityProvider() {
     // Initialize and listen for connectivity changes
@@ -27,6 +30,11 @@ class ConnectivityProvider with ChangeNotifier {
 
   void _updateConnectionStatus(ConnectivityResult result) {
     _isOnline = result != ConnectivityResult.none;
+    notifyListeners();
+  }
+
+  void setConnected(bool connected) {
+    _isConnected = connected;
     notifyListeners();
   }
 }

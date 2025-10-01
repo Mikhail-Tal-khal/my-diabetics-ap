@@ -7,7 +7,7 @@ import 'history_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-  
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -15,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   final PageController _pageController = PageController();
-  
+
   late final List<Widget> _screens;
 
   @override
@@ -66,10 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
       selectedItemColor: Theme.of(context).colorScheme.primary,
       unselectedItemColor: Colors.grey.shade400,
       items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home_rounded),
-          label: 'Home',
-        ),
+        BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: 'Home'),
         BottomNavigationBarItem(
           icon: Icon(Icons.history_rounded),
           label: 'History',

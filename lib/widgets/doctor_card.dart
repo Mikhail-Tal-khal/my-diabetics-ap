@@ -5,12 +5,14 @@ class DoctorCard extends StatelessWidget {
   final Doctor doctor;
   final VoidCallback onMessagePressed;
   final VoidCallback onCallPressed;
+  final bool isOnline;
 
   const DoctorCard({
     super.key,
     required this.doctor,
     required this.onMessagePressed,
     required this.onCallPressed,
+    this.isOnline = true,
   });
 
   @override

@@ -5,12 +5,14 @@ class MessageDialog extends StatelessWidget {
   final Doctor doctor;
   final TextEditingController messageController;
   final VoidCallback onSendPressed;
+  final bool isLoading;
 
   const MessageDialog({
     super.key,
     required this.doctor,
     required this.messageController,
     required this.onSendPressed,
+    this.isLoading = false,
   });
 
   @override

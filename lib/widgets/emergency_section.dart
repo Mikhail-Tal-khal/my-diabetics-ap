@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 class EmergencySection extends StatelessWidget {
   final VoidCallback onSendAlertPressed;
   final VoidCallback onCallEmergencyPressed;
+  final bool isOnline;
 
   const EmergencySection({
     super.key,
     required this.onSendAlertPressed,
     required this.onCallEmergencyPressed,
+    this.isOnline = true,
   });
 
   @override
