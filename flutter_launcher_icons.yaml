@@ -1,0 +1,9 @@
+flutter_launcher_icons:
+  image_path: "assets/icons/app_icon/sugar+.png"
+
+  android: "launcher_icon"
+  image_path_android: "assets/icons/app_icon/sugar+.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  adaptive_icon_background: "assets/icons/app_icon/sugar+.png"
+  adaptive_icon_foreground: "assets/icons/app_icon/sugar+.png"
+  adaptive_icon_monochrome: "assets/icons/app_icon/sugar+.png"
